@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:15
+    container_name: famchat-db
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - famchat-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spuser -d local_famchat_db"] # from .env will avoid race condition
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: famchat-api
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - famchat-net
+
+networks:
+  famchat-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+

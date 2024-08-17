@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/saltnepperson/FamChat/cmd/server/database"
 	"github.com/saltnepperson/FamChat/cmd/server/handler"
 	"github.com/saltnepperson/FamChat/cmd/server/middleware"
 	"github.com/saltnepperson/FamChat/util"
@@ -23,8 +24,18 @@ func main(){
 	if err != nil {
 		log.Fatalf("Could not load config %v", err)
 	} else {
-		log.Println("Config file loaded with DB_DRIVER: %s", config.DBDriver)
+		log.Println("Config file loaded with DB_DRIVER: ", config.DBDriver)
 	}
+
+	_, err = database.Initialize(config.DBDriver, config.BuildDBSource())
+
+	if err != nil {
+		log.Fatalf("Could not connect to the database: %v", err)
+	}
+
+	defer database.CloseDB()
+
+	database.RunDBMigration()
 
 	fmt.Println("Starting up the web server...")
 
