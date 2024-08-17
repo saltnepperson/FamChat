@@ -8,6 +8,56 @@ A simple, secure chat app designed to keep your family connected over your home 
 - **Emoji Reactions**: Let family members react to messages with a variety of emojis.
 - **Message Bubbles with Themes**: Customize chat bubbles with fun themes.
 
+## Entity Relationship Diagram
+```mermaid
+erDiagram
+    USER {
+        int id
+        string username
+        string password_hash
+        string email
+        datetime created_at
+        datetime last_login
+        boolean is_active
+    }
+    PROFILE {
+        int user_id
+        string bio
+        string profile_picture
+        string location
+        date birthdate
+        string status_message
+    }
+    CHAT {
+        int id
+        string name
+        datetime created_at
+        boolean is_group
+    }
+    MESSAGE {
+        int id
+        int chat_id
+        int user_id
+        string content
+        datetime sent_at
+        boolean is_read
+    }
+    NOTIFICATION {
+        int id
+        int user_id
+        string type
+        string message
+        datetime created_at
+        boolean is_read
+    }
+    
+    USER ||--o{ PROFILE : has
+    USER ||--o{ MESSAGE : sends
+    USER ||--o{ NOTIFICATION : receives
+    CHAT ||--o{ MESSAGE : contains
+    CHAT ||--o{ USER : participants
+```
+
 ## Project Setup
 FamChat uses Docker for deployment and project creation.
 
