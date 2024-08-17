@@ -2,15 +2,17 @@ package handler
 
 import (
 	"net/http"
-
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/chi/v5"
 )
 
-func RouteService() http.Handler {
-	r := chi.NewRouter()
+func RouteService() *http.ServeMux {
+	mux := http.NewServeMux()
 
-	r.Use(middleware.Logger)
+	// Register routes
+	mux.HandleFunc("/health_check", HealthCheck)
+	
+	return mux
+}
 
-	return r
+func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Healthy server"))
 }

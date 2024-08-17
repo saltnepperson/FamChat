@@ -11,11 +11,13 @@ import (
 	"time"
 
 	"github.com/saltnepperson/FamChat/cmd/server/handler"
+	"github.com/saltnepperson/FamChat/cmd/server/middleware"
 	"github.com/saltnepperson/FamChat/util"
 )
 
 
 func main(){
+	mux := handler.RouteService()
 	config, err := util.LoadConfig("../../")
 
 	if err != nil {
@@ -24,10 +26,13 @@ func main(){
 		log.Println("Config file loaded with DB_DRIVER: %v", config.DBDriver)
 	}
 
-	fmt.Println("Starting up the web server")
+	fmt.Println("Starting up the web server...")
+
+	handler := middleware.Logger(mux)
+
 	server := &http.Server{
 		Addr: "0.0.0.0:8080",
-		Handler: handler.RouteService(),
+		Handler: handler,
 	}
 
 	serverContext, serverCancel := context.WithCancel(context.Background())
