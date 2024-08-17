@@ -13,6 +13,3 @@ func RouteService() *http.ServeMux {
 	return mux
 }
 
-func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Healthy server"))
-}

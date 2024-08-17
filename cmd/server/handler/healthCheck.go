@@ -3,15 +3,15 @@ package handler
 import (
 	"net/http"
 
-	rs "github.com/saltnepperson/FamChat/pkg/responses"	
+	rs "github.com/saltnepperson/FamChat/cmd/server/responses"	
 )
 
-type HealthCheck struct {
+type HealthCheckResponse struct {
 	Message string `json:"message"`
 }
 
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	res := HealthCheck{Message: "Health check endpoint"}
+	res := HealthCheckResponse{Message: "Health check endpoint"}
 
-	rs.RespondWithJSON(w, http.StatusOK, res)
+	rs.JSON(w, http.StatusOK, res)
 }
