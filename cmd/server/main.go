@@ -23,7 +23,7 @@ func main(){
 	if err != nil {
 		log.Fatalf("Could not load config %v", err)
 	} else {
-		log.Println("Config file loaded with DB_DRIVER: %v", config.DBDriver)
+		log.Println("Config file loaded with DB_DRIVER: %s", config.DBDriver)
 	}
 
 	fmt.Println("Starting up the web server...")

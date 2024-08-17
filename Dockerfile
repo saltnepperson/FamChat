@@ -33,3 +33,6 @@ EXPOSE 8080
 # We cruise'n now
 ENTRYPOINT ["./famchat-server"]
 
+# Health check to ensure the service is running
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/health_check || exit 1
