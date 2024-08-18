@@ -16,5 +16,5 @@ docker/run:
 	docker run -p 8080:8080 fam-chat
 
 scripts/create_migration:
-	@read -p "What's your migration called: " migration && ./scripts/create_migration.sh $${migration}
+	@read -p "And you traveler, what's your migration called: " migration && ./scripts/create_migration.sh $${migration}
 
