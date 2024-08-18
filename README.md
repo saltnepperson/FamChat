@@ -18,7 +18,6 @@ erDiagram
         string email
         datetime created_at
         datetime last_login
-        boolean is_active
     }
     PROFILE {
         int user_id

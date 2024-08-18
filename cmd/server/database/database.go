@@ -3,15 +3,15 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
 	"log"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
 )
 
-var db	*sql.DB
-
+var db *sql.DB
 
 func Initialize(driver, source string) (*sql.DB, error) {
 	var err error
@@ -33,15 +33,23 @@ func Initialize(driver, source string) (*sql.DB, error) {
 func RunDBMigration() {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		fmt.Errorf("Error creating postgres driver: %v", err)
+		log.Fatalf("Error creating postgres driver: %v", err)
 	}
+	log.Printf("Driver value: %+v", driver)
+
 	m, err := migrate.NewWithDatabaseInstance(
-		"file:///migrations",
+		"file:///famchat/db/migrations",
 		"postgres", driver)
 	if err != nil {
-	fmt.Errorf("Error retrieving migration files: %v", err)
+		log.Fatalf("Error initializing migration: %v", err)
 	}
-	m.Up()
+	log.Printf("Migration instance: %+v", m)
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("Could not apply migration: %v", err)
+	}
+
+	log.Println("Successfully applied migrations...")
 }
 
 func GetDB() *sql.DB {

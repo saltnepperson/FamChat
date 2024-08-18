@@ -24,7 +24,7 @@ FROM alpine
 WORKDIR /root/
 
 COPY --from=builder /famchat/.env ./
-
+COPY --from=builder /famchat/db/migrations ./db/migrations
 COPY --from=builder /famchat/famchat-server ./
 
 # Expose those ports
