@@ -33,7 +33,7 @@ func LoadConfig(path string) (config Config, err error) {
 		// config file not found; ignore error
 	}
 
-	err = viper.Unmarshal(&config)
+	err = v.Unmarshal(&config)
 	if err != nil {
 		return config, fmt.Errorf("Unable to decode config into struct: %w", err)
 	}
