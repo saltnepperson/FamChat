@@ -30,10 +30,10 @@ func Initialize(driver, source string) (*sql.DB, error) {
 	return db, nil
 }
 
-func RunDBMigration() {
+func RunDBMigration() error {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		log.Fatalf("Error creating postgres driver: %v", err)
+		fmt.Errorf("Error creating postgres driver: %v", err)
 	}
 	log.Printf("Driver value: %+v", driver)
 
@@ -41,15 +41,16 @@ func RunDBMigration() {
 		"file:///famchat/db/migrations",
 		"postgres", driver)
 	if err != nil {
-		log.Fatalf("Error initializing migration: %v", err)
+		return fmt.Errorf("Error initializing migration: %v", err)
 	}
 	log.Printf("Migration instance: %+v", m)
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatalf("Could not apply migration: %v", err)
+		return fmt.Errorf("Could not apply migration: %v", err)
 	}
 
 	log.Println("Successfully applied migrations...")
+	return nil
 }
 
 func GetDB() *sql.DB {

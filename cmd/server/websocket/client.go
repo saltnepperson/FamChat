@@ -1,15 +1,18 @@
 package websocket
 
 import (
+	"github.com/gorilla/websocket"
 	"log"
 	"time"
-	"github.com/gorilla/websocket"
 )
 
 type Client struct {
-	hub *Hub
-	conn *websocket.Conn
-	send chan []byte
+	hub    *Hub
+	conn   *websocket.Conn
+	send   chan []byte
+	room   string
+	userID int
+	chatID int
 }
 
 // ReadPump pumps messages from the websocket connection to the Hub
