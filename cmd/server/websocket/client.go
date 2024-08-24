@@ -53,7 +53,7 @@ func (c *Client) WritePump() {
 
 			w, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
-				log.Printf("Error while getting next writer:", err)
+				log.Printf("Error while getting next writer: %v", err)
 				return
 			}
 

@@ -8,13 +8,18 @@ import (
 
 // Config holds the application configuration
 type Config struct {
-	DBDriver   string `mapstructure:"DB_DRIVER"`
-	DBHost     string `mapstructure:"DATABASE_HOST"`
-	DBDatabase string `mapstructure:"POSTGRES_DB"`
-	DBUsername string `mapstructure:"POSTGRES_USER"`
-	DBPassword string `mapstructure:"POSTGRES_PASSWORD"`
-	DBPort     string `mapstructure:"DATABASE_PORT"`
-	DBSslMode  string `mapstructure:"DB_SSL_MODE"`
+	DBDriver          string `mapstructure:"DB_DRIVER"`
+	DBHost            string `mapstructure:"DATABASE_HOST"`
+	DBDatabase        string `mapstructure:"POSTGRES_DB"`
+	DBUsername        string `mapstructure:"POSTGRES_USER"`
+	DBPassword        string `mapstructure:"POSTGRES_PASSWORD"`
+	DBPort            string `mapstructure:"DATABASE_PORT"`
+	DBSource          string `mapstructure:"-"`
+	DBSslMode         string `mapstructure:"DB_SSL_MODE"`
+	DBMigrationPath   string `mapstructure:"DB_MIGRATION_PATH"`
+	DBMaxOpenConns    int    `mapstructure:"DB_MAX_OPEN_CONNECTIONS"`
+	DBMaxIdleConns    int    `mapstructure:"DB_MAX_IDLE_CONNECTIONS"`
+	DBConnMaxLifetime int    `mapstructure:"DB_CONNECTION_MAX_LIFETIME"`
 }
 
 // LoadConfig reads the configuration from file and/or environment variables
@@ -24,6 +29,11 @@ func LoadConfig(path string) (config Config, err error) {
 	v.SetConfigFile(".env")
 	v.SetConfigType("env")
 	v.AutomaticEnv()
+
+	// Set reasonable defeault for specific configurations
+	v.SetDefault("DB_MAX_OPEN_CONNECTIONS", 10)
+	v.SetDefault("DB_MAX_IDLE_CONNECTIONS", 5)
+	v.SetDefault("DB_CONNECTION_MAX_LIFETIME", 3600)
 
 	err = v.ReadInConfig()
 	if err != nil {
@@ -42,6 +52,9 @@ func LoadConfig(path string) (config Config, err error) {
 	if err := config.validate(); err != nil {
 		return config, fmt.Errorf("Config validation error: %w", err)
 	}
+
+	// Construct the DBSource
+	config.buildDBSource()
 
 	return config, nil
 }
@@ -85,7 +98,7 @@ func (c *Config) validate() error {
 	return nil
 }
 
-func (c *Config) BuildDBSource() string {
-	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=%s",
+func (c *Config) buildDBSource() {
+	c.DBSource = fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=%s",
 		c.DBUsername, c.DBPassword, c.DBHost, c.DBPort, c.DBDatabase, c.DBSslMode)
 }

@@ -26,19 +26,19 @@ type MessageRepository interface {
 }
 
 // implements MessageRepository for PostGresSQL
-type PostGresMessageRepository struct {
+type PostgresMessageRepository struct {
 	db *sql.DB
 }
 
 // creates a new instance of PostGresMessageRepository
-func NewPostGresMessageRepository(db *sql.DB) *PostGresMessageRepository {
-	return &PostGresMessageRepository{
+func NewPostgresMessageRepository(db *sql.DB) *PostgresMessageRepository {
+	return &PostgresMessageRepository{
 		db: db,
 	}
 }
 
 // stores a new message in the database
-func (rep *PostGresMessageRepository) SaveMessage(ctx context.Context, message *Message) error {
+func (rep *PostgresMessageRepository) SaveMessage(ctx context.Context, message *Message) error {
 	query := `
 		INSERT INTO	messages (chat_id, user_id, content, sent_at, is_read)
 		VALUES ($1, $2, $3, $4, $5)
@@ -55,7 +55,7 @@ func (rep *PostGresMessageRepository) SaveMessage(ctx context.Context, message *
 }
 
 // retrieves the message history for a given chat
-func (rep *PostGresMessageRepository) GetMessageHistory(ctx context.Context, chatID int, limit, offset int) ([]Message, error) {
+func (rep *PostgresMessageRepository) GetMessageHistory(ctx context.Context, chatID int, limit, offset int) ([]Message, error) {
 	query := `
 	SELECT id, chat_id, user_id, content, sent_at, is_read
 	FROM messages
@@ -91,6 +91,6 @@ func (rep *PostGresMessageRepository) GetMessageHistory(ctx context.Context, cha
 }
 
 // closes the repository connection
-func (repo *PostGresMessageRepository) Close() error {
+func (repo *PostgresMessageRepository) Close() error {
 	return repo.db.Close()
 }

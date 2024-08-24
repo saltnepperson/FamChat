@@ -27,7 +27,6 @@ func main() {
 	if err = initializeDatabase(config); err != nil {
 		log.Fatalf("Failed the initialize database: %w", err)
 	}
-	defer database.CloseDB()
 
 	// Setup HTTP server
 	server := setupServer()
@@ -49,12 +48,24 @@ func loadConfig() (util.Config, error) {
 
 // initialize the database connection and run migrations
 func initializeDatabase(config util.Config) error {
-	_, err := database.Initialize(config.DBDriver, config.BuildDBSource())
+	databaseContext, databaseCancel := context.WithCancel(context.Background())
+	defer databaseCancel()
+
+	dbConfig := database.Config{
+		Driver:          config.DBDriver,
+		Source:          config.DBSource,
+		MaxOpenConns:    config.DBMaxOpenConns,
+		MaxIdleConns:    config.DBMaxIdleConns,
+		ConnMaxLifetime: time.Duration(config.DBConnMaxLifetime) * time.Second,
+		MigrationPath:   config.DBMigrationPath,
+	}
+
+	db, err := database.Initialize(databaseContext, dbConfig)
 	if err != nil {
 		return fmt.Errorf("Could not connect to the database: %w", err)
 	}
 
-	if err := database.RunDBMigration(); err != nil {
+	if err := db.RunDBMigration(databaseContext); err != nil {
 		return fmt.Errorf("Failed to run database migrations: %w", err)
 	}
 

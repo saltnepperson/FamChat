@@ -16,10 +16,10 @@ type Hub struct {
 
 func NewHub() *Hub {
 	return &Hub{
-		broadcast: make(chan []byte),
-		register: make(chan *Client),
+		broadcast:  make(chan []byte),
+		register:   make(chan *Client),
 		unregister: make(chan *Client),
-		clients: make(map[*Client]bool),
+		clients:    make(map[*Client]bool),
 	}
 }
 
@@ -29,8 +29,10 @@ func (h *Hub) Run() {
 		case client := <-h.register:
 			h.clients[client] = true
 		case client := <-h.unregister:
-			delete(h.clients, client)
-			close(client.send)
+			if _, ok := h.clients[client]; ok {
+				delete(h.clients, client)
+				close(client.send)
+			}
 		case message := <-h.broadcast:
 			for client := range h.clients {
 				select {
