@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - famchat-net
 
@@ -28,6 +33,22 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    networks:
+      - famchat-net
+
+  ui:
+    build: 
+      context: .
+      dockerfile: famchat-ui/Dockerfile
+    container_name: famchat-ui
+    volumes:
+      - ./famchat-ui:/app
+      - /app/node_modules
+    ports:
+      - "8000:8000"
+      - "80:80"
+    environment:
+      - NODE_ENV=development
     networks:
       - famchat-net
 
