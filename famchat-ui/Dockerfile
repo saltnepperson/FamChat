@@ -5,11 +5,11 @@ WORKDIR /app
 
 # Install dependencies
 COPY ./famchat-ui/package*.json ./
-RUN npm install
+RUN npm install -g pnpm
 
 # Copy all source code and build the application
 COPY ./famchat-ui .
-RUN npm run build
+RUN pnpm build
 
 
 # Development stage
@@ -24,7 +24,7 @@ COPY --from=build /app .
 EXPOSE 8000
 
 # Start the development server
-CMD ["npm", "run", "dev", "--", "--port", "8000"]
+CMD ["pnpm", "dev", "--port", "8000"]
 
 
 # Production stage

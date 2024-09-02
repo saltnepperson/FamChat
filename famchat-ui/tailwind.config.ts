@@ -6,6 +6,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'selector',
   theme: {
     extend: {
       backgroundImage: {
@@ -13,6 +14,17 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      colors: {
+        'primary-purple': '#3A215F',
+        'secondary-purple': '#DEC6FA',
+        'soft-pink': '#F6D6E7',
+        'light-gray': '#E5E5E5',
+      },
+    },
+    fontFamily: {
+      sans: [
+        '"Roboto", sans-serif',
+      ],
     },
   },
   plugins: [],
