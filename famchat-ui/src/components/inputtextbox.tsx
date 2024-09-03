@@ -9,7 +9,7 @@ export default function InputTextBox() {
             <input
                 type="text"
                 className="flex-1 bg-transparent border-none focus:outline-none text-sm placeholder-white-500"
-                placeholder="Type Message..."
+                placeholder="Type A Message..."
             />
             <button className="ml-2 text-purple-500">
                 <PaperAirplaneIcon className="h-5 w-5" />

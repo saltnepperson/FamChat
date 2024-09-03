@@ -1,4 +1,4 @@
-import InputTextBox from '@/components/InputTextBox';
+import InputTextBox from '@/components/inputtextbox';
 import Image from 'next/image';
 
 export default function Page() {
@@ -8,7 +8,7 @@ export default function Page() {
         <div className="flex items-start mb-4">
           <Image
             src="https://doodleipsum.com/700?i=b87ddbb3499fe9e609e2d0e6aae01b9c" // Replace with actual image path
-            alt="Daniel Garcia"
+            alt="Winston Avatar"
             width={40}
             height={40}
             className="rounded-full"
